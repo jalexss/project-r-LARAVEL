@@ -25,5 +25,5 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::prefix('receta')->group(function() {
     Route::get('/create', [RecetaController::class, 'create'])->name('receta.create');
-    Route::post('/store', [RecetaController::class, 'store'])->name('receta.store');
+    Route::post('/store', [RecetaController::class, 'store'])->name('receta');
 });

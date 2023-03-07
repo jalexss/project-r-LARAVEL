@@ -1,2 +1,3 @@
 import "./bootstrap";
-import "./jquery";
+import jQuery from "jquery";
+window.$ = jQuery;

@@ -11,7 +11,13 @@ class Receta extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    // protected $guarded = [];
+    protected $fillable = [
+        'title',
+        'description',
+        'instruction',
+        'minutes',
+    ];
 
     public function comments(): HasMany
     {
