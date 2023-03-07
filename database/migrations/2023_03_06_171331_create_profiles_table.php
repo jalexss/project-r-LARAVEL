@@ -17,8 +17,8 @@ return new class extends Migration
                     ->constrained()
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
-            $table->string('firstname', 20)->nullable();
-            $table->string('lastname', 20)->nullable();
+            $table->string('firstname')->nullable();
+            $table->string('lastname')->nullable();
             $table->string('avatar')->nullable();
             $table->timestamps();
         });

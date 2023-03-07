@@ -17,6 +17,7 @@
                     {{ __('You are logged in!') }}
                 </div>
             </div>
+            <button type="button" class="btn btn-primary" onclick="window.location='{{ URL::route('receta.create'); }}'" >Create Receta</button>
         </div>
     </div>
 </div>

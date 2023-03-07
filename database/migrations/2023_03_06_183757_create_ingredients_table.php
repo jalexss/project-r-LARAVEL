@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('ingredients', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string("ingredient",50);
+            $table->string("ingredient");
             $table->foreignId('receta_id')
                 ->constrained()
                 ->onUpdate('cascade')
