@@ -70,7 +70,7 @@ class RecetaController extends Controller
             ->create($request->except('ingredients'));
 
         if ($receta) {
-            $receta->ingredients()->create(
+            $receta->ingredients()->createMany(
                 array_map(
                     fn($description): array => ["description" => $description],
                     $request->ingredients
