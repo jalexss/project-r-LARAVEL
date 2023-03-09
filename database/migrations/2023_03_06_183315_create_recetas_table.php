@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('recetas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')
+            $table->foreignId('profile_id')
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->string("title")->unique();
+            $table->string("title");
             $table->string("instruction");
             $table->string("description");
             $table->integer("minutes")->default(1);

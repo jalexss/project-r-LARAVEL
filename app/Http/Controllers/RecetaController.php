@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Receta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class RecetaController extends Controller
 {
@@ -23,15 +25,34 @@ class RecetaController extends Controller
     {
         $recetas = Receta::all();
  
-        return view('receta.index', [$recetas]);
+        return view('recetas.index', ['recetas' => $recetas]);
     }
 
     public function create()
     {
-        return view('receta.create');
+        return view('recetas.create');
+    }
+    
+    public function edit(Request $request, string $id): View
+    {
+
+        $receta = Receta::with(['ingredients'])
+            ->findOrFail($id);
+
+
+        return view('recetas.edit', ["receta" => $receta]);
     }
 
-    public function store(Request $request)
+    public function show(Request $request, string $id): View
+    {
+
+        $receta = Receta::with(['ingredients', 'images', 'comments'])
+            ->findOrFail($id);
+
+        return view('recetas.show', ['receta' => $receta]);
+    }
+
+    protected function store(Request $request)
     {
         $request->validate([
             'title' => 'required|min:1|max:70',
@@ -41,19 +62,76 @@ class RecetaController extends Controller
             "ingredients" => "array",
             "ingredients.*" => "required|min:5|max:70|string",
         ]);
-  
-        $receta = Receta::create($request->except('ingredients'));
+
+        $receta = auth()
+            ->user()
+            ->profile
+            ->recetas()
+            ->create($request->except('ingredients'));
 
         if ($receta) {
-            $receta->ingredients()->create($request->ingredients);
+            $receta->ingredients()->create(
+                array_map(
+                    fn($description): array => ["description" => $description],
+                    $request->ingredients
+                )
+            );
          }
    
         return redirect()
-            ->route('receta.images', ['recetaId' => $receta -> id])
+            ->route('recetas.index', ['receta' => $receta])
             ->with('success','Receta created successfully.');
     }
 
-    public function uploadImages(Request $request)
+    protected function update(Request $request, string $id): view
+    {
+
+        $request->validate([
+            'title' => 'required|min:1|max:70',
+            'description' => 'required|min:5|max:255',
+            'instruction' => 'required|min:10',
+            'minutes' => 'required|min:1|max:4000',
+            "ingredients" => "array",
+            "ingredients.*" => "required|min:5|max:70|string",
+        ]);
+
+        $receta = auth()
+            ->user()
+            ->profile
+            ->recetas()
+            ->update($request->except('ingredients'));
+
+        if($receta) {
+            $receta->ingredients()->create(
+                array_map(
+                    fn($description): array => ["description" => $description],
+                    $request->ingredients
+                )
+            );
+        }
+
+        return redirect()
+        ->route('recetas.index', ['receta' => $receta])
+        ->with('success','Receta updated successfully.');
+    }
+
+    protected function destroy(Request $request, string $id)
+    {
+
+        Receta::where('id', $id)->delete();
+
+        return redirect()
+            ->route('recetas.index')
+            ->withSuccess(__('Receta deleted successfully.'));
+    }
+
+    public function editImages (Request $request, Id $id): View
+    {
+
+        return view('recetas.images', ['recetaId' => $receta->id]);
+    }
+
+    protected function updateImages(Request $request)
     {
 
         $validator = Validator::make($request->all(), [
@@ -76,15 +154,7 @@ class RecetaController extends Controller
         $file->images = $files;
         $file->save();
       
-        return redirect()->route('home.index')->with('success','You have successfully upload images/image.');
-    }
-
-    public function show(string $id): view
-    {
-
-        $receta = Receta::with(['ingredients', 'images', 'comments'])
-            ->findOrFail($id);
-
-        return view('receta.show', $receta);
+        return redirect()->route('recetas.index')
+            ->with('success','You have successfully upload images/image.');
     }
 }

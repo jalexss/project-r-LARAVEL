@@ -23,7 +23,31 @@ Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::prefix('receta')->group(function() {
-    Route::get('/create', [RecetaController::class, 'create'])->name('receta.create');
-    Route::post('/store', [RecetaController::class, 'store'])->name('receta');
+Route::prefix('recetas')->middleware('auth')->group(function() {
+    Route::get('/', [RecetaController::class, 'index'])
+        ->name('recetas.index');
+
+    Route::get('/create', [RecetaController::class, 'create'])
+        ->name('recetas.create');
+    
+    Route::get('/edit/{id}', [RecetaController::class, 'edit'])
+        ->name('recetas.edit');
+    
+    Route::get('/{id}', [RecetaController::class, 'show'])
+        ->name('recetas.show');
+
+    Route::post('/', [RecetaController::class, 'store'])
+        ->name('recetas.store');
+    
+    Route::put('/{id}', [RecetaController::class, 'update'])
+        ->name('recetas.update');
+
+    Route::delete('/{id}', [RecetaController::class, 'destroy'])
+        ->name('recetas.destroy');
+
+    Route::get('/{id}/images', [RecetaController::class, 'editImages'])
+        ->name('recetas.images');
+
+    Route::patch('/{id}/images', [RecetaController::class, 'updateImages'])
+        ->name('recetas.updateImages');
 });

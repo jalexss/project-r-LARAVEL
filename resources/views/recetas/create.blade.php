@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <form method="POST" class="needs-validation" action="{{ route('receta') }}" novalidate>
+    <form method="POST" class="needs-validation" action="{{ route('recetas.store') }}" novalidate>
         @csrf
 
         <div class="row mb-3">
@@ -55,13 +55,12 @@
             <label for="InputRecetaIngredients" class="form-label @error('ingredients') is-invalid @enderror">{{ __('Ingredients')}}</label>
             <div id="ingredientsHelp" class="form-text">{{ __('Try a nice ingredients for you receta!. (max: 70 characters)') }}</div>
             <div id="ingredients-group" class="input-group">
-                <input type="text" name="ingredients" class="form-control" id="ingredientsInput"  aria-describedby="ingredientsHelp" required >
-                {{-- <button id="delete-ingredient" class="btn btn-outline-secondary" type="button">Delete</button> --}}
-                <button id="add-ingredient" class="btn btn-outline-secondary" type="button">Append</button>
+                <input type="text" name="ingredients[]" class="form-control" id="ingredientsInput"  aria-describedby="ingredientsHelp" required >
+                <button id="delete-ingredient" class="btn btn-outline-secondary" type="button">Delete</button>
             </div>
-            <div id="ingredients">
-                {{-- extra --}}
-            </div>
+            {{-- <div id="ingredients">
+            </div> --}}
+            
             
             @error('ingredients')
                 <span class="invalid-feedback" role="alert">
@@ -69,6 +68,7 @@
                 </span>
             @enderror
         </div>
+        <button id="add-ingredient" class="btn btn-outline-secondary" type="button">Append</button>
         <button type="submit" class="btn btn-primary">Create</button>
     </form>
 </div>
@@ -79,24 +79,33 @@
             $(document).ready(function(){
                 console.log('jquery-actived');
                 $("#add-ingredient").click(function () {
-                    var newInput = '<input type="text" name="ingredients" class="form-control" id="ingredientsInput"  aria-describedby="ingredientsHelp" required >' +
-                        '<button id="delete-ingredient" class="btn btn-outline-secondary" type="button">Delete</button>';
-                    $("#ingredients").append(newInput);
+                    console.log('add input')
+                    var newInput = $('#ingredients-group:first').clone();
+                    newInput.find('#ingredientsInput').val('');
+                    $('for-ingredients').append(newInput);
+                });
 
-                    if($("#ingredients").find('input').length < 10)
-                        $('#ingredients').append(newInput);
-                    else{
-                        $("#add-ingredient").attr("disabled", "true");
-                    }
-                //     console.log('add-ingredient-input')
-                //     var newInput = '<input type="text" name="ingredients" class="form-control" id="ingredientsInput"  aria-describedby="ingredientsHelp" required >' +
+                $("#for-ingredients").on('click', '.remove-input', function() {
+                    $(this).closest('#ingredients-group').remove();
+                })
                 //         '<button id="delete-ingredient" class="btn btn-outline-secondary" type="button">Delete</button>';
-                //    $("#ingredients").append(newInput);
-                });
+                //     $("#ingredients").append(newInput);
+
+                //     if($("#ingredients").find('input').length < 10)
+                //         $('#ingredients').append(newInput);
+                //     else{
+                //         $("#add-ingredient").attr("disabled", "true");
+                //     }
+                // //     console.log('add-ingredient-input')
+                // //     var newInput = '<input type="text" name="ingredients" class="form-control" id="ingredientsInput"  aria-describedby="ingredientsHelp" required >' +
+                // //         '<button id="delete-ingredient" class="btn btn-outline-secondary" type="button">Delete</button>';
+                // //    $("#ingredients").append(newInput);
+                // });
         
-                $("#for-ingredients").on("click", "#delete-ingredient", function () {
-                    $(this).parents("#ingredients").remove();
-                });
+                // $("#for-ingredients").on("click", "#delete-ingredient", function () {
+                //     $(this).parents("#ingredients").remove();
+                // });
+            
             });
         </script>
     @endpush
