@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Receta;
+use App\Models\Ingredient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -83,7 +84,7 @@ class RecetaController extends Controller
             ->with('success','Receta created successfully.');
     }
 
-    protected function update(Request $request, string $id): view
+    public function update(Request $request, string $id)
     {
 
         $request->validate([
@@ -95,30 +96,35 @@ class RecetaController extends Controller
             "ingredients.*" => "required|min:5|max:70|string",
         ]);
 
-        $receta = auth()
-            ->user()
-            ->profile
-            ->recetas()
-            ->update($request->except('ingredients'));
+        $receta = Receta::find($id)->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'instruction' => $request->instruction,
+            'minutes' => $request->minutes,
+        ]);
 
-        if($receta) {
-            $receta->ingredients()->createMany(
-                array_map(
-                    fn($description): array => ["description" => $description],
-                    $request->ingredients
-                )
-            );
-        }
+        Ingredient::where('receta_id', $id)->delete();
+
+        $ingredients = Ingredient::where('receta_id', $id)->upsert(
+            array_map(
+                fn($description): array => [
+                    "description" => $description,
+                    "receta_id" => $id,
+                    "id" => null
+                ],
+                $request->ingredients
+            ), ['id']
+        );
 
         return redirect()
-        ->route('recetas.index', ['receta' => $receta])
-        ->with('success','Receta updated successfully.');
+            ->route('recetas.index')
+            ->with('success','Receta updated successfully.');
     }
 
     protected function destroy(Request $request, string $id)
     {
 
-        Receta::where('id', $id)->delete();
+        Receta::find($id)->delete();
 
         return redirect()
             ->route('recetas.index')
