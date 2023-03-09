@@ -1,4 +1,5 @@
 $(function () {
+    console.log("recetaIng", recetaIngredients);
     const deleteIngredientElementsKey = ".delete-ingredient";
     const containerElement = $("#ingredients");
     const addIngredientElement = $("#add-ingredient");
@@ -60,6 +61,7 @@ $(function () {
 
     function init() {
         recoverOldIngredients();
+        recetaIngredientInEdit();
         addIngredientElement.on("click", function () {
             add();
         });
@@ -89,6 +91,16 @@ $(function () {
         }
 
         oldIngredients.forEach((item) => add(item));
+    }
+
+    function recetaIngredientInEdit() {
+        if (!recetaIngredients || recetaIngredients.length < 1) {
+            showEmptyMessage();
+
+            return;
+        }
+
+        recetaIngredients.forEach((item) => add(item.description));
     }
 
     function showEmptyMessage() {
