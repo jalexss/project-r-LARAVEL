@@ -51,16 +51,16 @@
                 </span>
             @enderror
         </div>
-        <div id="for-ingredients" class="mb-3">
+        <div id="ingredients-container" class="mb-3">
             <label for="InputRecetaIngredients" class="form-label @error('ingredients') is-invalid @enderror">{{ __('Ingredients')}}</label>
-            <div id="ingredientsHelp" class="form-text">{{ __('Try a nice ingredients for you receta!. (max: 70 characters)') }}</div>
-            <div id="ingredients-group" class="input-group">
-                <input type="text" name="ingredients[]" class="form-control" id="ingredientsInput"  aria-describedby="ingredientsHelp" required >
-                <button id="delete-ingredient" class="btn btn-outline-secondary" type="button">Delete</button>
+            <div
+                id="ingredientsHelp"
+                class="form-text"
+            >
+                Try a nice ingredients for you receta!. (max: 70 characters)
             </div>
-            {{-- <div id="ingredients">
-            </div> --}}
-            
+
+            <div id="ingredients"></div>
             
             @error('ingredients')
                 <span class="invalid-feedback" role="alert">
@@ -68,26 +68,28 @@
                 </span>
             @enderror
         </div>
-        <button id="add-ingredient" class="btn btn-outline-secondary" type="button">Append</button>
+        <button id="add-ingredient" class="btn btn-outline-secondary" type="button">Add</button>
         <button type="submit" class="btn btn-primary">Create</button>
     </form>
 </div>
 @endsection
 @once
     @push('scripts')
+        <script>var oldIngredients = {{ Js::from(old('ingredients')) }}</script>
+        @vite(['resources/js/recetas/create.js'])
         <script type="module">
-            $(document).ready(function(){
-                console.log('jquery-actived');
-                $("#add-ingredient").click(function () {
-                    console.log('add input')
-                    var newInput = $('#ingredients-group:first').clone();
-                    newInput.find('#ingredientsInput').val('');
-                    $('for-ingredients').append(newInput);
-                });
+            // $(document).ready(function(){
+            //     console.log('jquery-actived');
+            //     $("#add-ingredient").click(function () {
+            //         console.log('add input')
+            //         var newInput = $('#ingredients-group:first').clone();
+            //         newInput.find('#ingredientsInput').val('');
+            //         $('for-ingredients').append(newInput);
+            //     });
 
-                $("#for-ingredients").on('click', '.remove-input', function() {
-                    $(this).closest('#ingredients-group').remove();
-                })
+            //     $("#for-ingredients").on('click', '.remove-input', function() {
+            //         $(this).closest('#ingredients-group').remove();
+            //     })
                 //         '<button id="delete-ingredient" class="btn btn-outline-secondary" type="button">Delete</button>';
                 //     $("#ingredients").append(newInput);
 
@@ -106,7 +108,7 @@
                 //     $(this).parents("#ingredients").remove();
                 // });
             
-            });
+            // });
         </script>
     @endpush
 @endonce
