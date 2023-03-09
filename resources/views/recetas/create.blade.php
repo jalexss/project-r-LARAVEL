@@ -20,7 +20,17 @@
         </div>
         <div class="mb-3">
             <label for="description" class="form-label">{{ __('Description')}}</label>
-            <textarea type="text" name="description" class="form-control @error('description') is-invalid @enderror" id="descriptionInput" rows="3"style="resize: none" required ></textarea>
+            <textarea 
+                type="text" 
+                name="description" 
+                class="form-control 
+                @error('description') is-invalid @enderror" 
+                value="{{ old('description') }}" 
+                id="descriptionInput" 
+                rows="3"
+                style="resize: none" 
+                required 
+            ></textarea>
             <div id="descriptionHelp" class="form-text">{{ __('Why is a good receta?. (max: 255 characters)')}}</div>
             
             @error('description')
@@ -31,7 +41,18 @@
         </div>
         <div class="mb-3">
             <label for="instruction" class="form-label">{{ __('Instruction')}}</label>
-            <textarea type="text" name="instruction" class="form-control @error('instruction') is-invalid @enderror" id="instructionInput" rows="3" style="resize: none" required ></textarea>
+            <textarea 
+                type="text" 
+                name="instruction" 
+                class="form-control 
+                @error('instruction') is-invalid @enderror" 
+                value="{{ old('instruction') }}" 
+                id="instructionInput" 
+                rows="3" style="resize: none" 
+                required 
+            >
+            </textarea>
+
             <div id="instructionHelp" class="form-text">{{ __('Step by step?.')}}</div>
             
             @error('instruction')
@@ -53,6 +74,8 @@
         </div>
         <div id="ingredients-container" class="mb-3">
             <label for="InputRecetaIngredients" class="form-label @error('ingredients') is-invalid @enderror">{{ __('Ingredients')}}</label>
+            <button id="add-ingredient" class="btn btn-outline-secondary" type="button">{{ __('Add')}}</button>
+            
             <div
                 id="ingredientsHelp"
                 class="form-text"
@@ -62,13 +85,12 @@
 
             <div id="ingredients"></div>
             
-            @error('ingredients')
+            @error('ingredients' || 'ingredients*')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>
             @enderror
         </div>
-        <button id="add-ingredient" class="btn btn-outline-secondary" type="button">Add</button>
         <button type="submit" class="btn btn-primary">Create</button>
     </form>
 </div>
@@ -77,38 +99,5 @@
     @push('scripts')
         <script>var oldIngredients = {{ Js::from(old('ingredients')) }}</script>
         @vite(['resources/js/recetas/create.js'])
-        <script type="module">
-            // $(document).ready(function(){
-            //     console.log('jquery-actived');
-            //     $("#add-ingredient").click(function () {
-            //         console.log('add input')
-            //         var newInput = $('#ingredients-group:first').clone();
-            //         newInput.find('#ingredientsInput').val('');
-            //         $('for-ingredients').append(newInput);
-            //     });
-
-            //     $("#for-ingredients").on('click', '.remove-input', function() {
-            //         $(this).closest('#ingredients-group').remove();
-            //     })
-                //         '<button id="delete-ingredient" class="btn btn-outline-secondary" type="button">Delete</button>';
-                //     $("#ingredients").append(newInput);
-
-                //     if($("#ingredients").find('input').length < 10)
-                //         $('#ingredients').append(newInput);
-                //     else{
-                //         $("#add-ingredient").attr("disabled", "true");
-                //     }
-                // //     console.log('add-ingredient-input')
-                // //     var newInput = '<input type="text" name="ingredients" class="form-control" id="ingredientsInput"  aria-describedby="ingredientsHelp" required >' +
-                // //         '<button id="delete-ingredient" class="btn btn-outline-secondary" type="button">Delete</button>';
-                // //    $("#ingredients").append(newInput);
-                // });
-        
-                // $("#for-ingredients").on("click", "#delete-ingredient", function () {
-                //     $(this).parents("#ingredients").remove();
-                // });
-            
-            // });
-        </script>
     @endpush
 @endonce
