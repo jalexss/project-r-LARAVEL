@@ -59,7 +59,7 @@ class RecetaController extends Controller
             'description' => 'required|min:5|max:255',
             'instruction' => 'required|min:10',
             'minutes' => 'required|min:1|max:4000',
-            "ingredients" => "array",
+            "ingredients" => "required|array|max:" . config('custom.recetas.max_ingredients'),
             "ingredients.*" => "required|min:5|max:70|string",
         ]);
 
@@ -91,7 +91,7 @@ class RecetaController extends Controller
             'description' => 'required|min:5|max:255',
             'instruction' => 'required|min:10',
             'minutes' => 'required|min:1|max:4000',
-            "ingredients" => "array",
+            "ingredients" => "required|array",
             "ingredients.*" => "required|min:5|max:70|string",
         ]);
 
@@ -102,7 +102,7 @@ class RecetaController extends Controller
             ->update($request->except('ingredients'));
 
         if($receta) {
-            $receta->ingredients()->create(
+            $receta->ingredients()->createMany(
                 array_map(
                     fn($description): array => ["description" => $description],
                     $request->ingredients
