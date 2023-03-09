@@ -4,6 +4,7 @@
 <div class="container">
     <form method="POST" class="needs-validation" action="{{ route('recetas.update', $receta->id) }}" novalidate>
         @csrf
+        @method('PUT')
 
         <div class="row mb-3">
             <label for="title" class="form-label">{{ __('Title')}}</label>
