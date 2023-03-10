@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RecetaController;
+use App\Http\Controllers\IsValidEmailController;
+use App\Http\Controllers\IsValidUsernameController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +24,9 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+Route::get('/email/verify', [IsValidEmailController::class, 'validateEmail'])->name('valid.email');
+Route::get('/username/verify', [IsValidUsernameController::class, 'validateUsername'])->name('valid.username');
 
 Route::prefix('recetas')->middleware('auth')->group(function() {
     Route::get('/', [RecetaController::class, 'index'])
