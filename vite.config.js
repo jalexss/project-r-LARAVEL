@@ -8,6 +8,7 @@ export default defineConfig({
                 "resources/sass/app.scss",
                 "resources/js/app.js",
                 "resources/js/recetas/create.js",
+                "resources/js/auth/register.js",
             ],
             refresh: true,
         }),

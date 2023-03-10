@@ -8,13 +8,13 @@
                 <div class="card-header">{{ __('Register') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
+                    <form id="register-form" method="POST" action="{{ route('register') }}" novalidate>
                         @csrf
 
                         <div class="row mb-3">
                             <label for="username" class="col-md-4 col-form-label text-md-end">{{ __('Username') }}</label>
 
-                            <div class="col-md-6">
+                            <div id="username-container" class="col-md-6">
                                 <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required autocomplete="username" autofocus>
 
                                 @error('username')
@@ -22,6 +22,10 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+
+                                <span id="invalid-feedback-username" class="invalid-feedback" role="alert">
+                                    <strong>{{ __("The username has already been taken.")}}</strong>
+                                </span>
                             </div>
                         </div>
 
@@ -56,7 +60,7 @@
                         <div class="row mb-3">
                             <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
 
-                            <div class="col-md-6">
+                            <div id="email-container" class="col-md-6">
                                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
 
                                 @error('email')
@@ -64,6 +68,10 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+
+                                <span id="invalid-feedback-email" class="invalid-feedback" role="alert">
+                                    <strong>{{ __("The email has already been taken.")}}</strong>
+                                </span>
                             </div>
                         </div>
 
@@ -103,3 +111,12 @@
     </div>
 </div>
 @endsection
+@once
+    @push('scripts')
+        <script>
+            var urlRouteEmail = {{ Js::from(route('valid.email')) }};
+            var urlRouteUsername =  {{ Js::from(route('valid.username')) }};
+        </script>
+        @vite(['resources/js/auth/register.js'])
+    @endpush
+@endonce
