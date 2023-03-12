@@ -17,12 +17,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-        // Profile::factory(10)->create();
-        // Receta::factory(20)->create();
-        // Ingredient::factory(10)->create();
-        // Comment::factory(10)->create();
-
         User::factory()->create([
             'username' => 'alex',
             'email' => 'alex@prueba.com',
