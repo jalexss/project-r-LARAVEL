@@ -1,8 +1,3 @@
-console.log("im in HOME!");
-
-console.log({
-    recetasUrl,
-});
 $(function () {
     var page = 1;
     var loadingSpinnerContainer = $("#loading-spinner-container");
@@ -10,13 +5,11 @@ $(function () {
 
     load_more(page);
 
-    $(window).on("scroll", function (e) {
-        console.log({ e });
+    $(window).on("scroll", function () {
         if (
             $(window).scrollTop() + $(window).height() >=
             $(document).height()
         ) {
-            console.log("im inside");
             page++;
             loadingSpinnerContainer.removeClass("d-none");
             load_more(page);
