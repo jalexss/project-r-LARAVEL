@@ -24,6 +24,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/home/recetas', [HomeController::class, 'getRecetas'])->name('getRecetas');
 
 Route::get('/email/verify', [IsValidEmailController::class, 'validateEmail'])->name('valid.email');
 Route::get('/username/verify', [IsValidUsernameController::class, 'validateUsername'])->name('valid.username');

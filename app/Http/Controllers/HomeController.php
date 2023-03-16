@@ -24,8 +24,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $recetas = Receta::orderBy('id','desc')->paginate(6);
- 
-        return view('home',  ['recetas' => $recetas]);
+        return view('home');
+    }
+
+    public function getRecetas(Request $request)
+    { 
+        $recetas = Receta::orderBy('created_at','desc')->paginate(6);
+
+        return view('recetas.receta_items', ["recetas" => $recetas]);
     }
 }
