@@ -9,6 +9,7 @@ export default defineConfig({
                 "resources/js/app.js",
                 "resources/js/recetas/create.js",
                 "resources/js/auth/register.js",
+                "resources/js/home/home.js",
             ],
             refresh: true,
         }),
