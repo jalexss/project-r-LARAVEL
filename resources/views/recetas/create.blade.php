@@ -50,8 +50,7 @@
                 id="instructionInput" 
                 rows="3" style="resize: none" 
                 required 
-            >
-            </textarea>
+            ></textarea>
 
             <div id="instructionHelp" class="form-text">{{ __('Step by step?.')}}</div>
             
@@ -98,6 +97,7 @@
 @once
     @push('scripts')
         <script>var oldIngredients = {{ Js::from(old('ingredients')) }}</script>
+        <script>var recetaIngredients = {{ 0 }}</script>
         @vite(['resources/js/recetas/create.js'])
     @endpush
 @endonce
