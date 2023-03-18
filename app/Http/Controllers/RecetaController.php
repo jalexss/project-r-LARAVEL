@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Receta;
-use App\Models\Ingredient;
+use App\Models\Ingredient; 
+use App\Models\Image; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\File;
 
 class RecetaController extends Controller
 {
@@ -47,7 +50,7 @@ class RecetaController extends Controller
     public function show(Request $request, string $id): View
     {
 
-        $receta = Receta::with(['ingredients', 'images', 'comments'])
+        $receta = Receta::with(['ingredients', 'images', 'comments', 'profile'])
             ->findOrFail($id);
 
         return view('recetas.show', ['receta' => $receta]);
@@ -80,7 +83,7 @@ class RecetaController extends Controller
          }
    
         return redirect()
-            ->route('recetas.index', ['receta' => $receta])
+            ->route('recetas.images', ['id' => $receta->id ])
             ->with('success','Receta created successfully.');
     }
 
@@ -131,36 +134,47 @@ class RecetaController extends Controller
             ->withSuccess(__('Receta deleted successfully.'));
     }
 
-    public function editImages (Request $request, Id $id): View
+    public function editImages (Request $request, string $recetaId):View
     {
+        $receta = Receta::with(['images'])->findOrFail($recetaId);
 
-        return view('recetas.images', ['recetaId' => $receta->id]);
+        return view('recetas.images', ['receta' => $receta]);
     }
 
-    protected function updateImages(Request $request)
+    protected function updateImages(Request $request, string $recetaId)
     {
-
-        $validator = Validator::make($request->all(), [
-            'images' => 'required|image|mimes:jpeg,png,jpg|size:2048|max:6|min:1',
+        request()->validate([
+            'images' => 'required|array|min:1|max:3',
+            'images.*' => 'mimes:jpeg,png,jpg|max:2048|min:1',
         ]);
+        
+        $receta = Receta::with(['images', 'profile'])->findOrFail($recetaId);
+        $directory = "public/users/" . $receta->profile->user_id . "/recetas/" . $recetaId;
 
-        $files = [];
         if($request->hasfile('images'))
         {
-            // Storage::deleteDirectory($directory);
-            foreach($request->file('images') as $file)
+            $files = Storage::allFiles($directory);
+            Storage::delete($files); //acepta arrays, strings
+            $imagesName = []; 
+            
+            foreach($request->file('images') as $image)
             {
-                $name = time().rand(1,50).'image.'.$file->extension();
-                $file->move(public_path('files'), $name);  
-                $files[] = $name;
+                $name = time().rand(1,50).'image.'.$image->extension();
+                $image = Storage::putFileAs($directory, $image, $name);
+                $imagesName[] = $name;
             }
+
+            Image::where('receta_id', $recetaId)->delete();
+
+            $receta->images()->createMany(
+                array_map(
+                    fn($imagesName): array => ["name" => $imagesName],
+                    $imagesName
+                )
+            );
         }
 
-        $file= new File();
-        $file->images = $files;
-        $file->save();
-      
-        return redirect()->route('recetas.index')
+        return redirect()->route('recetas.show', ['id' => $receta->id ])
             ->with('success','You have successfully upload images/image.');
     }
 }
