@@ -36,7 +36,20 @@
             </tbody>
         </table>
 
-        <p>Comentarios e imagenes soon...</p>
+        <div class="container text-center">
+            <div class="row row-cols-3">
+                @foreach ($receta->images as $image)
+                <div class="col">
+                    <img 
+                        class="img-fluid" 
+                        src="{{ asset('/storage/users/'. $receta->profile->user_id . '/recetas/' . $receta->id . "/" . $image->name )}}" 
+                    />
+                </div>
+                @endforeach
+            </div>
+        </div>
+
+        <p>Comentarios soon...</p>
     </div>
 </div>
 @endsection
