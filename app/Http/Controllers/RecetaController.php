@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\File;
+// use Illuminate\Http\File;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\File;
 
 class RecetaController extends Controller
 {
@@ -144,8 +146,10 @@ class RecetaController extends Controller
     protected function updateImages(Request $request, string $recetaId)
     {
         request()->validate([
-            'images' => 'required|array|min:1|max:3',
-            'images.*' => 'mimes:jpeg,png,jpg|max:2048|min:1',
+            'images' => 'required|array|min:1|max:6',
+            'images.*' => File::image()
+                            ->min(1)
+                            ->max(3900),
         ]);
         
         $receta = Receta::with(['images', 'profile'])->findOrFail($recetaId);
@@ -159,7 +163,7 @@ class RecetaController extends Controller
             
             foreach($request->file('images') as $image)
             {
-                $name = time().rand(1,50).'image.'.$image->extension();
+                $name =  Str::uuid() . '.' . $image->extension();
                 $image = Storage::putFileAs($directory, $image, $name);
                 $imagesName[] = $name;
             }
