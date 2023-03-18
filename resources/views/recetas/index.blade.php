@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="container">
+    <a class="btn btn-primary" href="{{ route('recetas.create') }}">Create Receta</a>
     <table class="table table-striped table-hover">
         <thead>
         <tr>
@@ -37,8 +38,6 @@
             </tr>
             @endforeach
         </tbody>    
-    </table>
-
-    <button type="button" class="btn btn-primary" onclick="window.location='{{ URL::route('recetas.create'); }}'" >Create Receta</button>
+    </table> 
 </div>
 @endsection
