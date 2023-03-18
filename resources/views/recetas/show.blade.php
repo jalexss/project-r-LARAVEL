@@ -3,6 +3,10 @@
 <div class="container">
     <div>
         <h1>Show</h1>
+        @if(  auth()->user()->id === $receta->profile->user_id )
+            <a class="btn btn-primary" href="{{ route('recetas.edit',$receta->id) }}">{{ __('Edit') }}</a>
+        @endif
+
         <h3>{{ __('title') }}</h3>
         <p>{{ $receta->title }}</p>
 
