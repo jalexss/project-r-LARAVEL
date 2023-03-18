@@ -106,6 +106,7 @@
             @enderror
         </div>
         <button type="submit" class="btn btn-primary">Create</button>
+        <a href="{{ route('recetas.images', $receta->id) }}" class="btn btn-secondary">Skip</a>
     </form>
 </div>
 @endsection
