@@ -2,6 +2,24 @@
 
 @section('content')
 <div class="container">
+    @if(count($receta->images) > 0)
+        <div class="row row-cols-3">
+            @foreach ($receta->images as $image)
+            <div class="col">
+                <img 
+                    class="img-fluid" 
+                    src="{{ asset('/storage/'. $image->path )}}" 
+                />
+                <form action="{{ route('recetas.deleteImages', $image->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+      
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+            @endforeach
+        </div>
+    @endif
     <form method="POST" class="needs-validation" action="{{ route('recetas.updateImages', $receta->id) }}" enctype="multipart/form-data">
         @csrf
         @method('PATCH')
