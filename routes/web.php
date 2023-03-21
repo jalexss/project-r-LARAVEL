@@ -56,4 +56,7 @@ Route::prefix('recetas')->middleware('auth')->group(function() {
 
     Route::patch('/{id}/images', [RecetaController::class, 'updateImages'])
         ->name('recetas.updateImages');
+
+    Route::delete('/{id}/images', [RecetaController::class, 'deleteImages'])
+        ->name('recetas.deleteImages');
 });
