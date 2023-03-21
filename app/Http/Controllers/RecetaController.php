@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
-// use Illuminate\Http\File;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\File;
 
@@ -21,11 +20,6 @@ class RecetaController extends Controller
      *
      * @return void
      */
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
-
 
     public function index(): view
     {
@@ -148,37 +142,53 @@ class RecetaController extends Controller
         request()->validate([
             'images' => 'required|array|min:1|max:6',
             'images.*' => File::image()
-                            ->min(1)
-                            ->max(3900),
+                ->min(1)
+                ->max(3900),
         ]);
         
         $receta = Receta::with(['images', 'profile'])->findOrFail($recetaId);
-        $directory = "public/users/" . $receta->profile->user_id . "/recetas/" . $recetaId;
+        $directory = "users/" . $receta->profile->user_id . "/recetas/" . $recetaId;
+        $imageMaxCount = count($receta->images) + count($request->file('images'));
+
+        if( $imageMaxCount > 6 )
+        {
+            return redirect()
+                ->back()
+                ->withErrors(['You exceed the maximum capacity for images (6). Please, try again']);
+        }
 
         if($request->hasfile('images'))
         {
-            $files = Storage::allFiles($directory);
-            Storage::delete($files); //acepta arrays, strings
-            $imagesName = []; 
+            $imagesPath = []; 
             
             foreach($request->file('images') as $image)
             {
                 $name =  Str::uuid() . '.' . $image->extension();
-                $image = Storage::putFileAs($directory, $image, $name);
-                $imagesName[] = $name;
+                $image = Storage::putFileAs('public/'. $directory, $image, $name);
+                $imagesPath[] = $directory . '/' . $name;
             }
-
-            Image::where('receta_id', $recetaId)->delete();
 
             $receta->images()->createMany(
                 array_map(
-                    fn($imagesName): array => ["name" => $imagesName],
-                    $imagesName
+                    fn($imagesPath): array => ["path" => $imagesPath],
+                    $imagesPath
                 )
             );
         }
 
         return redirect()->route('recetas.show', ['id' => $receta->id ])
             ->with('success','You have successfully upload images/image.');
+    }
+
+    protected function deleteImages(Request $request, string $imageId)
+    {
+        $image = Image::findOr($imageId, function () {
+            return redirect()->back()->withErrors(['Image not found.']);
+        });
+        $image->delete();
+        
+        Storage::delete('public/' . $image->path);
+
+        return redirect()->back()->with('success', 'Image deleted successfully!');
     }
 }
