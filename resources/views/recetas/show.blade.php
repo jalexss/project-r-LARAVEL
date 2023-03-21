@@ -46,7 +46,7 @@
                 <div class="col">
                     <img 
                         class="img-fluid" 
-                        src="{{ asset('/storage/users/'. $receta->profile->user_id . '/recetas/' . $receta->id . "/" . $image->name )}}" 
+                        src="{{ asset('/storage/'. $image->path )}}" 
                     />
                 </div>
                 @endforeach
