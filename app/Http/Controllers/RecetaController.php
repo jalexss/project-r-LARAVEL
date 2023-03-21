@@ -80,7 +80,7 @@ class RecetaController extends Controller
    
         return redirect()
             ->route('recetas.images', ['id' => $receta->id ])
-            ->with('success','Receta created successfully.');
+            ->withSuccess('Receta created successfully.');
     }
 
     public function update(Request $request, string $id)
@@ -117,7 +117,7 @@ class RecetaController extends Controller
 
         return redirect()
             ->route('recetas.index')
-            ->with('success','Receta updated successfully.');
+            ->withSuccess('Receta updated successfully.');
     }
 
     protected function destroy(Request $request, string $id)
@@ -177,7 +177,7 @@ class RecetaController extends Controller
         }
 
         return redirect()->route('recetas.show', ['id' => $receta->id ])
-            ->with('success','You have successfully upload images/image.');
+            ->withSuccess('You have successfully upload images/image.');
     }
 
     protected function deleteImages(Request $request, string $imageId)
@@ -185,10 +185,13 @@ class RecetaController extends Controller
         $image = Image::findOr($imageId, function () {
             return redirect()->back()->withErrors(['Image not found.']);
         });
-        $image->delete();
+        $isSuccessDelete = $image->delete();
         
-        Storage::delete('public/' . $image->path);
+        if($isSuccessDelete)
+        {
+            Storage::delete('public/' . $image->path);
+        }
 
-        return redirect()->back()->with('success', 'Image deleted successfully!');
+        return redirect()->back()->withSuccess('Image deleted successfully!');
     }
 }
