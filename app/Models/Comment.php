@@ -16,4 +16,8 @@ class Comment extends Model
     {
         return $this->belongsTo(Receta::class);
     }
+    public function profile(): BelongsTo
+    {
+        return $this->belongsTo(Profile::class);
+    }
 }

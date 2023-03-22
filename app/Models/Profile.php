@@ -32,4 +32,9 @@ class Profile extends Model
     {
         return $this->hasMany(Receta::class);
     }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
